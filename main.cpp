@@ -43,14 +43,17 @@ int main() {
             rock->SetYVelocity(rock->GetYVelocity() + ROCK_GRAVITY_PULL);
             rock->SetY(rock->GetY() + rock->GetYVelocity());
 
-            if (rock->GetY() > PLAY_WINDOW_HEIGHT + 50 - rock->GetRadius()) {
+            // Xoay rock liên tục
+            rock->UpdateRotation(GetFrameTime());
+
+            if (rock->GetY() > PLAY_WINDOW_HEIGHT + 100 - rock->GetRadius()) {
                 delete rock;
                 rock = nullptr;
             }
             else if (CheckCollisionCircleRec(Vector2{rock->GetX(), rock->GetY()}, rock->GetRadius(), bar.GetRect())) {
                 delete rock;
                 rock = nullptr;
-                if (score > 0) score -= 1;
+                if (score > 0) score--;
             }
         }
 
@@ -58,8 +61,7 @@ int main() {
         if (egg->GetY() > PLAY_WINDOW_HEIGHT + 50 - egg->GetRadius()) {
             delete egg;
             egg = (Egg*)ObjectFactory::Create(EGG);
-            if ((float)GetRandomValue(1, 100) / 100.0f <= ROCK_DROP_RATE) {
-                if (rock) delete rock;
+            if ((float)GetRandomValue(1, 100) / 100.0f <= ROCK_DROP_RATE && rock == nullptr)  {
                 rock = (Rock*)ObjectFactory::Create(ROCK);
             }
             if (score > 0) score--;
@@ -68,13 +70,12 @@ int main() {
         else if (CheckCollisionCircleRec(Vector2{egg->GetX(), egg->GetY()}, egg->GetRadius(), bar.GetRect())) {
             delete egg;
             egg = (Egg*)ObjectFactory::Create(EGG);
-            if ((float)GetRandomValue(1, 100) / 100.0f <= ROCK_DROP_RATE) {
-                if (rock) delete rock;
+            if ((float)GetRandomValue(1, 100) / 100.0f <= ROCK_DROP_RATE && rock == nullptr)  {
                 rock = (Rock*)ObjectFactory::Create(ROCK);
             }
             score++;
         }
-
+ 
         // Bar collision with play window boundaries
         if (bar.GetX() >= 50 + PLAY_WINDOW_WIDTH - bar.GetWidth() - 3) {
             bar.SetX(50 + PLAY_WINDOW_WIDTH - bar.GetWidth() - 3);  

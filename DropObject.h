@@ -36,6 +36,9 @@ public:
 };
 
 class Egg : public CircleObject {
+private:
+    Texture2D texture;
+    bool textureLoaded = false;
 public:
     float GetRadius() const override;
     void SetRadius(const float& r) override;
@@ -52,9 +55,20 @@ public:
     void SetYVelocity(const float& yVel) override;
 
     void Draw() const override;
+
+    // Texture management
+    void LoadTexture(const char* path);
+    void UnloadTexture();
+
+    // Destructor
+    ~Egg();
 };
 
 class Rock : public CircleObject {
+private:
+    Texture2D texture;
+    bool textureLoaded = false;
+    float rotation = 0.0f; // góc xoay hiện tại
 public:
     float GetRadius() const override;
     void SetRadius(const float& r) override;
@@ -71,6 +85,17 @@ public:
     void SetYVelocity(const float& yVel) override;
 
     void Draw() const override;
+
+    // Texture management
+    void LoadTexture(const char* path);
+    void UnloadTexture();
+
+    // Destructor
+    ~Rock();
+
+    // Rotation
+    void UpdateRotation(float dt);
+    float GetRotation() const { return rotation; }
 };
 
 #endif
