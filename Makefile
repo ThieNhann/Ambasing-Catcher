@@ -364,13 +364,14 @@ endif
 rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
 # Define all source files required
-SRC_DIR = src
-OBJ_DIR = obj
+SRC_DIR = source
+
+# Lấy tất cả file .cpp trong folder source
+OBJS = $(wildcard $(SRC_DIR)/*.cpp)
 
 # Define all object files from source files
 SRC = $(call rwildcard, *.c, *.h)
 #OBJS = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-OBJS ?= main.cpp
 
 # For Android platform we call a custom Makefile.Android
 ifeq ($(PLATFORM),PLATFORM_ANDROID)

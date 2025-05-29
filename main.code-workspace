@@ -50,7 +50,22 @@
 			"stdexcept": "cpp",
 			"streambuf": "cpp",
 			"cinttypes": "cpp",
-			"typeinfo": "cpp"
+			"typeinfo": "cpp",
+			"bit": "cpp",
+			"charconv": "cpp",
+			"compare": "cpp",
+			"concepts": "cpp",
+			"cstring": "cpp",
+			"ctime": "cpp",
+			"functional": "cpp",
+			"iterator": "cpp",
+			"numeric": "cpp",
+			"random": "cpp",
+			"format": "cpp",
+			"numbers": "cpp",
+			"span": "cpp",
+			"text_encoding": "cpp",
+			"variant": "cpp"
 		}
 	}
 }
