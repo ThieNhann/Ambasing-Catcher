@@ -3,6 +3,7 @@
 #include <cmath>
 #include <string>
 #include "DropObject.h"
+#include "ObjectFactory.h"
 #include "Player.h"
 #include "Config.h"
 #include "Utils.h"
@@ -18,11 +19,9 @@ int main() {
 
     string scoreText = "Score: ";
 
-    //--- Game Objects ---
-    Egg ball;
-    ball.SetX(BALL_INIT_X);
-    ball.SetY(BALL_INIT_Y);
-    ball.SetRadius(BALL_RADIUS);
+    Egg* egg = (Egg*)ObjectFactory::Create(EGG);
+
+    Rock* rock = nullptr;
 
     Player bar(BAR_INIT_X, BAR_INIT_Y, BAR_WIDTH, BAR_HEIGHT, BAR_SPEED);
 
@@ -32,23 +31,47 @@ int main() {
     
     //--- Main Game Loop ---
     while (!WindowShouldClose()) {
-        //--- Update Logic ---
-        bar.Update();
-        ball.SetYVelocity(ball.GetYVelocity() + GRAVITY);
-        ball.SetY(ball.GetY() + ball.GetYVelocity());
 
-        // Ball falls out of play window
-        if (ball.GetY() > PLAY_WINDOW_HEIGHT + 50 - ball.GetRadius()) {
-            ball.SetX(GetRandomValue(53 + ball.GetRadius(), PLAY_WINDOW_WIDTH - ball.GetRadius()));
-            ball.SetY(BALL_INIT_Y);
-            ball.SetYVelocity(0.0f);
+        //--- Update Logic ---
+
+        bar.Update();
+
+        egg->SetYVelocity(egg->GetYVelocity() + EGG_GRAVITY_PULL);
+        egg->SetY(egg->GetY() + egg->GetYVelocity());
+
+        if (rock) {
+            rock->SetYVelocity(rock->GetYVelocity() + ROCK_GRAVITY_PULL);
+            rock->SetY(rock->GetY() + rock->GetYVelocity());
+
+            if (rock->GetY() > PLAY_WINDOW_HEIGHT + 50 - rock->GetRadius()) {
+                delete rock;
+                rock = nullptr;
+            }
+            else if (CheckCollisionCircleRec(Vector2{rock->GetX(), rock->GetY()}, rock->GetRadius(), bar.GetRect())) {
+                delete rock;
+                rock = nullptr;
+                if (score > 0) score -= 1;
+            }
+        }
+
+        // egg falls out of play window
+        if (egg->GetY() > PLAY_WINDOW_HEIGHT + 50 - egg->GetRadius()) {
+            delete egg;
+            egg = (Egg*)ObjectFactory::Create(EGG);
+            if ((float)GetRandomValue(1, 100) / 100.0f <= ROCK_DROP_RATE) {
+                if (rock) delete rock;
+                rock = (Rock*)ObjectFactory::Create(ROCK);
+            }
             if (score > 0) score--;
         }
-        // Ball collides with bar
-        else if (CheckCollisionCircleRec(Vector2{ball.GetX(), ball.GetY()}, ball.GetRadius(), bar.GetRect())) {
-            ball.SetX(GetRandomValue(53 + ball.GetRadius(), PLAY_WINDOW_WIDTH - ball.GetRadius()));
-            ball.SetY(BALL_INIT_Y);
-            ball.SetYVelocity(0.0f);
+        // egg collides with bar
+        else if (CheckCollisionCircleRec(Vector2{egg->GetX(), egg->GetY()}, egg->GetRadius(), bar.GetRect())) {
+            delete egg;
+            egg = (Egg*)ObjectFactory::Create(EGG);
+            if ((float)GetRandomValue(1, 100) / 100.0f <= ROCK_DROP_RATE) {
+                if (rock) delete rock;
+                rock = (Rock*)ObjectFactory::Create(ROCK);
+            }
             score++;
         }
 
@@ -59,11 +82,12 @@ int main() {
         if (bar.GetX() <= 55) {
             bar.SetX(55);  
         }
-
+        
         //--- Draw Everything ---
         BeginDrawing();
             ClearBackground(BLACK);
-            ball.Draw();
+            if (egg) egg->Draw();
+            if (rock) rock->Draw();
             bar.Draw();
             DrawRectangleLinesEx(playWindow, PLAY_WINDOW_OUTLINE_THICKNESS, WHITE);
             DrawText((scoreText + to_string(score)).c_str(), 600, 50, 30, WHITE);
@@ -71,5 +95,7 @@ int main() {
     }
     
     //--- Cleanup ---
+    delete egg; // Prevent memory leak
+    delete rock;
     CloseWindow();
 }

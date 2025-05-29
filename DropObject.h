@@ -10,41 +10,67 @@ class DropObject {
 protected:
     Vector2 position;
     float xVelocity, yVelocity;
+
 public:
-    virtual float GetX();
-    virtual float GetY();
-    virtual float GetXVelocity();
-    virtual float GetYVelocity();
+    virtual float GetX() const = 0;
+    virtual float GetY() const = 0;
+    virtual float GetXVelocity() const = 0;
+    virtual float GetYVelocity() const = 0;
 
-    virtual void SetX(const float& _x);
-    virtual void SetY(const float& _y);
-    virtual void SetXVelocity(const float& xVel);
-    virtual void SetYVelocity(const float& yVel);
+    virtual void SetX(const float& _x) = 0;
+    virtual void SetY(const float& _y) = 0;
+    virtual void SetXVelocity(const float& xVel) = 0;
+    virtual void SetYVelocity(const float& yVel) = 0;
 
-    virtual void Draw() = 0;
+    virtual void Draw() const = 0;
     virtual ~DropObject() {}
 };
 
-class Egg : public DropObject {
-private:
+class CircleObject : public DropObject {
+protected:
     float radius;
+
 public:
-    float GetRadius();
-    void SetRadius(const float& r);
+    virtual float GetRadius() const = 0;
+    virtual void SetRadius(const float& r) = 0;
+};
 
-    float GetX() override;
-    float GetY() override;
+class Egg : public CircleObject {
+public:
+    float GetRadius() const override;
+    void SetRadius(const float& r) override;
 
-    float GetXVelocity() override;
-    float GetYVelocity() override;
+    float GetX() const override;
+    float GetY() const override;
+
+    float GetXVelocity() const override;
+    float GetYVelocity() const override;
 
     void SetX(const float& _x) override;
     void SetY(const float& _y) override;
-    void SetXVelocity(const float& xVel);
-    void SetYVelocity(const float& yVel);
+    void SetXVelocity(const float& xVel) override;
+    void SetYVelocity(const float& yVel) override;
 
-    void Draw() override;
-    
+    void Draw() const override;
+};
+
+class Rock : public CircleObject {
+public:
+    float GetRadius() const override;
+    void SetRadius(const float& r) override;
+
+    float GetX() const override;
+    float GetY() const override;
+
+    float GetXVelocity() const override;
+    float GetYVelocity() const override;
+
+    void SetX(const float& _x) override;
+    void SetY(const float& _y) override;
+    void SetXVelocity(const float& xVel) override;
+    void SetYVelocity(const float& yVel) override;
+
+    void Draw() const override;
 };
 
 #endif
