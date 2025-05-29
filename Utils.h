@@ -3,4 +3,6 @@
 
 #include <raylib.h>
 
+// Utility functions and definitions (currently empty)
+
 #endif
