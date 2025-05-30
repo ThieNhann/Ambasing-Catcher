@@ -10,8 +10,8 @@ const int SCREEN_HEIGHT = 600;
 //--------------------
 // Playing window configuration
 //--------------------
-const int PLAY_WINDOW_WIDTH = 500;
-const int PLAY_WINDOW_HEIGHT = 500;
+const int PLAY_WINDOW_WIDTH = SCREEN_WIDTH - 300;
+const int PLAY_WINDOW_HEIGHT = SCREEN_HEIGHT - 100;
 const int PLAY_WINDOW_OUTLINE_THICKNESS = 3;
 
 //--------------------
@@ -27,10 +27,10 @@ const int EGG_INIT_Y_VELOCITY = 2.0f;
 //--------------------
 // Rock drop configuration
 //--------------------
-const float ROCK_DROP_RATE = 0.5f;
+const float ROCK_DROP_RATE = 1.0f;
 const float ROCK_GRAVITY_PULL = 0.05f;
-const int ROCK_MIN_RADIUS = 60;
-const int ROCK_MAX_RADIUS = 70;
+const int ROCK_MIN_RADIUS = 40;
+const int ROCK_MAX_RADIUS = 50;
 const int ROCK_INIT_X = GetRandomValue(60 + ROCK_MAX_RADIUS, PLAY_WINDOW_WIDTH + 50 - ROCK_MAX_RADIUS);
 const int ROCK_INIT_Y = 100 + ROCK_MAX_RADIUS;
 const int ROCK_INIT_Y_VELOCITY = 0.1f;

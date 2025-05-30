@@ -73,22 +73,16 @@ Rock::~Rock() {
     UnloadTexture();
 }
 
-void Rock::UpdateRotation(float dt) {
-    // Xoay với tốc độ 120 độ/giây
-    rotation += 120.0f * dt;
-    if (rotation > 360.0f) rotation -= 360.0f;
-}
-
 void Rock::Draw() const {
-    if (textureLoaded) {
-        float scale = (radius * 2) / (float)texture.width;
-        // Vẽ texture xoay quanh tâm
-        DrawTexturePro(
+    if (1) {
+        // Scale texture để vừa với hình tròn (fit theo cạnh nhỏ nhất)
+        float minDim = (texture.width < texture.height) ? texture.width : texture.height;
+        float scale = (radius * 2) / minDim;
+        DrawTextureEx(
             texture,
-            Rectangle{0, 0, (float)texture.width, (float)texture.height},
-            Rectangle{position.x - radius, position.y - radius, radius * 2, radius * 2},
-            Vector2{radius, radius},
-            rotation,
+            {(float)(position.x - radius), (float)(position.y - radius)},
+            0.0f, // Không xoay
+            scale,
             WHITE
         );
     } else {

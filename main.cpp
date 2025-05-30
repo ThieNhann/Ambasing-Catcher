@@ -15,6 +15,8 @@ using namespace std;
 int main() {
     //--- Window and Game Setup ---
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Gravity Simulation");
+    InitAudioDevice();
+
     SetTargetFPS(60);
 
     string scoreText = "Score: ";
@@ -27,11 +29,21 @@ int main() {
 
     Rectangle playWindow = {50, 50, PLAY_WINDOW_WIDTH, PLAY_WINDOW_HEIGHT};
 
+    Vector2 bottomLineLeftPoint = {50, 50 + PLAY_WINDOW_HEIGHT};
+
+    Vector2 bottomLineRightPoint = {50 + PLAY_WINDOW_WIDTH, 50 + PLAY_WINDOW_HEIGHT};
+
+    Sound eggCol = LoadSound("resource/sounds/coin.wav");
+    Sound rockCol = LoadSound("resource/sounds/hurt.wav");
+    Music bgMusic = LoadMusicStream("resource/sounds/time_for_adventure.mp3");
+    PlayMusicStream(bgMusic);
+
     int score = 0;
-    
+
     //--- Main Game Loop ---
     while (!WindowShouldClose()) {
-
+        
+        UpdateMusicStream(bgMusic);
         //--- Update Logic ---
 
         bar.Update();
@@ -43,17 +55,20 @@ int main() {
             rock->SetYVelocity(rock->GetYVelocity() + ROCK_GRAVITY_PULL);
             rock->SetY(rock->GetY() + rock->GetYVelocity());
 
-            // Xoay rock liên tục
-            rock->UpdateRotation(GetFrameTime());
-
-            if (rock->GetY() > PLAY_WINDOW_HEIGHT + 100 - rock->GetRadius()) {
-                delete rock;
-                rock = nullptr;
-            }
-            else if (CheckCollisionCircleRec(Vector2{rock->GetX(), rock->GetY()}, rock->GetRadius(), bar.GetRect())) {
+            // Check collision with bar first
+            if (CheckCollisionCircleRec(Vector2{rock->GetX(), rock->GetY()}, rock->GetRadius(), bar.GetRect())) {
+                PlaySound(rockCol);
                 delete rock;
                 rock = nullptr;
                 if (score > 0) score--;
+            }
+            // Then check if rock hits the bottom line or falls out of play window
+            else if (
+                CheckCollisionCircleLine(Vector2{rock->GetX(), rock->GetY()}, rock->GetRadius(), bottomLineLeftPoint, bottomLineRightPoint)
+                || rock->GetY() + rock->GetRadius() > 50 + PLAY_WINDOW_HEIGHT
+            ) {
+                delete rock;
+                rock = nullptr;
             }
         }
 
@@ -68,6 +83,7 @@ int main() {
         }
         // egg collides with bar
         else if (CheckCollisionCircleRec(Vector2{egg->GetX(), egg->GetY()}, egg->GetRadius(), bar.GetRect())) {
+            PlaySound(eggCol);
             delete egg;
             egg = (Egg*)ObjectFactory::Create(EGG);
             if ((float)GetRandomValue(1, 100) / 100.0f <= ROCK_DROP_RATE && rock == nullptr)  {
@@ -87,15 +103,18 @@ int main() {
         //--- Draw Everything ---
         BeginDrawing();
             ClearBackground(BLACK);
+            DrawRectangleLinesEx(playWindow, PLAY_WINDOW_OUTLINE_THICKNESS, WHITE);
+            DrawText((scoreText + to_string(score)).c_str(), 600, 50, 30, WHITE);
             if (egg) egg->Draw();
             if (rock) rock->Draw();
             bar.Draw();
-            DrawRectangleLinesEx(playWindow, PLAY_WINDOW_OUTLINE_THICKNESS, WHITE);
-            DrawText((scoreText + to_string(score)).c_str(), 600, 50, 30, WHITE);
         EndDrawing();
     }
-    
+
     //--- Cleanup ---
+    UnloadMusicStream(bgMusic);
+    UnloadSound(eggCol);
+    UnloadSound(rockCol);
     delete egg; // Prevent memory leak
     delete rock;
     CloseWindow();
