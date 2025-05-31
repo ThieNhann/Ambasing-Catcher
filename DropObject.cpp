@@ -31,7 +31,7 @@ Egg::~Egg() {
 }
 
 void Egg::Draw() const {
-    if (textureLoaded) {
+    if (0) {
         float scale = (radius * 2) / (float)texture.width;
         DrawTextureEx(texture, 
             {(float)(position.x - radius), (float)(position.y - radius)}, 
@@ -74,7 +74,7 @@ Rock::~Rock() {
 }
 
 void Rock::Draw() const {
-    if (1) {
+    if (0) {
         // Scale texture để vừa với hình tròn (fit theo cạnh nhỏ nhất)
         float minDim = (texture.width < texture.height) ? texture.width : texture.height;
         float scale = (radius * 2) / minDim;

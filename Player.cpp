@@ -28,5 +28,5 @@ void Player::Update() {
 // Draw player bar
 //--------------------
 void Player::Draw() {
-    DrawRectangleRec(rect, GREEN);
+    DrawRectangleRec(rect, WHITE);
 }
