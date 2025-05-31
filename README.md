@@ -2,4 +2,4 @@
 
 Raylib + C++ 
 
-First game I have ever coded. Just for learning OOP.
+First game I have ever coded. Just for practicing OOP.
